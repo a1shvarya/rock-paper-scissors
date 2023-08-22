@@ -1,0 +1,30 @@
+pipeline{
+    agent{
+      node{ label 'built-in'
+            customWorkspace "/mnt/jenkinscw"
+      }
+    }
+stages{
+    stage('git-clone') {
+        steps{
+            sh 'git clone https://github.com/a1shvarya/rock-paper-scissors.git'
+        }
+    }
+    
+    stage('mvn build') {
+        steps{  
+            dir ('/mnt/jenkinscw/rock-paper-scissors') {
+        sh 'mvn clean'
+        sh 'mvn install'      
+            }
+        }
+    }
+    
+    stage('deployment') {
+        steps{
+        sh 'cp -r /mnt/jenkinscw/rock-paper-scissors/target/roshambo.war /root/tomcat/apache-tomcat-9.0.78/webapps'
+            
+        }
+    }
+}
+}
